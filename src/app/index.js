@@ -1,4 +1,5 @@
 import oauthService from './service/oauth.service';
+import sheetService from './service/sheet.service';
 
 let buffer = '';
 
@@ -20,6 +21,14 @@ document.querySelector('#login').addEventListener('click', () => {
   oauthService.authorize((redirectUri) => {
     window.location.href = redirectUri;
   });
+})
+
+document.querySelector('#read').addEventListener('click', () => {
+  sheetService.read();
+})
+
+document.querySelector('#write').addEventListener('click', () => {
+  sheetService.write();
 })
 
 console.log(window.location.href);

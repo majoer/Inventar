@@ -8,5 +8,6 @@ module.exports = {
   ENVIRONMENT: ENVIRONMENT,
   APP_URI: isProduction ? 'file://dist/index.html' : 'http://localhost:8080',
   CLIENT_SECRET: credentials.installed.client_secret,
-  CLIENT_ID: credentials.installed.client_id
+  CLIENT_ID: credentials.installed.client_id,
+  SPREADSHEET_ID: '1B3v9pSbgCimY2i6IvpWXYZPvXsfICPOjbmlCIriFyiw'
 }
