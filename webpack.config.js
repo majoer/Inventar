@@ -15,5 +15,18 @@ module.exports = {
     new webpack.ExternalsPlugin('commonjs', [
       'electron'
     ])
-  ]
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            scss: 'sass-loader'
+          }
+        }
+      }
+    ]
+  }
 };
