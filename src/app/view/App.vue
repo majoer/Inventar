@@ -1,8 +1,19 @@
 <template>
-  <div>
-    <button v-on:click="login">Login</button>
-    <button v-on:click="read">read</button>
-    <button v-on:click="write">write</button>
+  <div class="dashboard">
+
+    <div class="dashboard__item">
+      <button class="dashboard__button" v-on:click="login">Scan inn</button>
+
+    </div>
+
+    <div class="dashboard__item">
+      <button class="dashboard__button" v-on:click="read">Scan ut</button>
+    </div>
+
+    <div class="dashboard__item">
+      <button class="dashboard__button" v-on:click="write">Rapport</button>
+    </div>
+
   </div>
 </template>
 
@@ -30,13 +41,13 @@ export default {
 
   methods: {
     login: () => {
-        oauthService.authorize((redirectUri) => {
-          window.location.href = redirectUri;
-        });
+      oauthService.authorize((redirectUri) => {
+        window.location.href = redirectUri;
+      });
     },
 
     read: () => {
-        sheetService.read();
+      sheetService.read();
     },
 
     write: () => {
@@ -46,6 +57,44 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/main';
+
+.dashboard {
+  background: black;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  width: 100%;
+
+  @include desktop {
+    flex-direction: row;
+  };
+}
+
+.dashboard__item {
+  height: 33%;
+  flex-basis: 33%;
+  flex-grow: 1;
+
+  @include desktop {
+    height: 100%;
+  }
+}
+
+.dashboard__button {
+  background: ghostwhite;
+  border: 1px solid black;
+  border-radius: 3px;
+  font-size: 20px;
+  height: 100%;
+  width: 100%;
+
+  &:hover {
+    background: lighten(ghostwhite, 20%);
+  }
+}
 
 </style>
