@@ -2,7 +2,7 @@
   <div class="dashboard">
 
     <div class="dashboard__item">
-      <button class="dashboard__button"  v-on:click="navigate('ut')">
+      <button class="dashboard__button"  v-on:click="$router.push('/ut/scan')">
         <div class="dashboard__button__icon">
           <i class="fa fa-4x fa-suitcase"/>
         </div>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="dashboard__item">
-      <button class="dashboard__button" v-on:click="navigate('inn')">
+      <button class="dashboard__button" v-on:click="$router.push('/inn/scan')">
         <div class="dashboard__button__icon">
           <i class="fa fa-4x fa-archive"/>
         </div>
@@ -21,7 +21,7 @@
     </div>
 
     <div class="dashboard__item">
-      <button class="dashboard__button"  v-on:click="navigate('rapport')">
+      <button class="dashboard__button"  v-on:click="$router.push('/rapport')">
           <div class="dashboard__button__icon">
             <i class="fa fa-4x fa-book"/>
           </div>
@@ -35,35 +35,15 @@
 <script>
 import oauthService from '../service/oauth.service';
 import oauthService from '../service/oauth.service';
-import router from './router/router';
 
 let buffer = '';
 
 export default {
-  created: () => {
-    document.addEventListener('keyup', (event) => {
-      buffer += event.key;
-
-      const regex = /[0-9]{4}$/;
-
-      let storageCode = regex.exec(buffer)[0];
-
-      if (storageCode) {
-        buffer = '';
-        console.log(storageCode);
-      }
-    });
-  },
-
   methods: {
-    login: () => {
+    login() {
       oauthService.authorize((redirectUri) => {
         window.location.href = redirectUri;
       });
-    },
-
-    navigate: (path) => {
-      router.push(path);
     }
   }
 }
