@@ -3,23 +3,29 @@
 
     <div class="dashboard__item">
       <button class="dashboard__button" v-on:click="login">
-        <div><i class="fa fa-4x fa-suitcase"/></div>
-        <div>Ut på tur</div>
+        <div class="dashboard__button__icon">
+          <i class="fa fa-4x fa-suitcase"/>
+        </div>
+        <div class="dashboard__button__text">Ut på tur</div>
       </button>
 
     </div>
 
     <div class="dashboard__item">
       <button class="dashboard__button" v-on:click="read">
-        <div><i class="fa fa-4x fa-archive"/></div>
-        <div>Inn på lager</div>
+        <div class="dashboard__button__icon">
+          <i class="fa fa-4x fa-archive"/>
+        </div>
+        <div class="dashboard__button__text">Inn på lager</div>
       </button>
     </div>
 
     <div class="dashboard__item">
       <button class="dashboard__button" v-on:click="write">
-          <i class="fa fa-4x fa-book"/>
-          <div>Rapport</div>
+          <div class="dashboard__button__icon">
+            <i class="fa fa-4x fa-book"/>
+          </div>
+          <div class="dashboard__button__text">Rapport</div>
       </button>
     </div>
 
@@ -100,6 +106,14 @@ export default {
   font-size: 20px;
   height: 100%;
   width: 100%;
+
+  &__icon {
+    color: navy;
+  }
+
+  &__text {
+    color: black;
+  }
 
   &:hover {
     background: lighten(ghostwhite, 20%);
