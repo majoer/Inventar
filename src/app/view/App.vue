@@ -2,16 +2,25 @@
   <div class="dashboard">
 
     <div class="dashboard__item">
-      <button class="dashboard__button" v-on:click="login">Scan inn</button>
+      <button class="dashboard__button" v-on:click="login">
+        <div><i class="fa fa-4x fa-suitcase"/></div>
+        <div>Ut på tur</div>
+      </button>
 
     </div>
 
     <div class="dashboard__item">
-      <button class="dashboard__button" v-on:click="read">Scan ut</button>
+      <button class="dashboard__button" v-on:click="read">
+        <div><i class="fa fa-4x fa-archive"/></div>
+        <div>Inn på lager</div>
+      </button>
     </div>
 
     <div class="dashboard__item">
-      <button class="dashboard__button" v-on:click="write">Rapport</button>
+      <button class="dashboard__button" v-on:click="write">
+          <i class="fa fa-4x fa-book"/>
+          <div>Rapport</div>
+      </button>
     </div>
 
   </div>
