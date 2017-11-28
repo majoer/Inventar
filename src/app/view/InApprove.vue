@@ -1,8 +1,16 @@
 <template>
+<div>
   <div class="approve">
     Godkjenning
-    {{ storageCodes }}
+    {{ newStorageCodes }}
   </div>
+  <div>
+    {{ items }}
+  </div>
+  <div>
+    {{ newItems }}
+  </div>
+</div>
 </template>
 
 <script>
@@ -10,16 +18,27 @@ import sheetService from '../service/sheet.service';
 
 export default {
   created() {
-    this.storageCodes = this.$route.query.storageCodes;
+    this.newStorageCodes = this.$route.query.storageCodes;
+    sheetService.read((data) => {
+      this.items = data.values;
+      this.newItems = this.items.map((itemRow) => {
+        return {
+          id: itemRow[0],
+          name: itemRow[1],
+          status: itemRow[2]
+        }
+      }).filter((item) => !this.newStorageCodes.includes(item.id))
+    });
   },
   data() {
     return {
-      storageCodes: []
+      newStorageCodes: [],
+      items: [],
+      newItems: []
     };
   },
   methods: {
     read() {
-      sheetService.read();
     },
 
     write() {

@@ -1,14 +1,14 @@
 import { ipcRenderer } from 'electron';
 
 export default {
-  read: () => {
+  read: (onReadComplete) => {
     const callback = (event, response) => {
       ipcRenderer.removeListener('sheet.read.complete', callback);
-      console.log(response);
+      onReadComplete(response);
     };
 
     ipcRenderer.send('sheet.read', {
-      range: 'A1'
+      range: 'A2:C8'
     });
     ipcRenderer.on('sheet.read.complete', callback);
   },

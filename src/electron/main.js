@@ -35,6 +35,15 @@ app.on('activate', () => {
 });
 
 ipcMain.on('sheet.read', (event, readOptions) => {
+  if (!_oauth2Client) {
+    authenticate(() => read(event, readOptions));
+    return;
+  }
+
+  read(event, readOptions);
+});
+
+function read(event, readOptions) {
   sheetService.read(readOptions.range, _oauth2Client, (err, response) => {
     if (err) {
       console.log(err);
@@ -42,7 +51,7 @@ ipcMain.on('sheet.read', (event, readOptions) => {
 
     event.sender.send('sheet.read.complete', response);
   })
-});
+}
 
 ipcMain.on('sheet.write', (event, writeOptions) => {
   sheetService.write(writeOptions.range, writeOptions.values, _oauth2Client, (err, response) => {
@@ -55,6 +64,12 @@ ipcMain.on('sheet.write', (event, writeOptions) => {
 });
 
 ipcMain.on('oauth.authorize', () => {
+  authenticate();
+});
+
+function authenticate(onAuthenticateComplete) {
+  const previousURI = _window.webContents.getURL();
+
   oauthService.authorize((redirectUri, oauth2Client) => {
     _window.webContents.on('did-navigate', (event, navigationUri) => {
       event.preventDefault();
@@ -64,9 +79,12 @@ ipcMain.on('oauth.authorize', () => {
       if (authCode) {
         oauthService.token(authCode, oauth2Client, (oauth2Client) => {
           _oauth2Client = oauth2Client;
+          _window.loadURL(new URL(previousURI).toString());
+          onAuthenticateComplete();
         });
       }
     });
+    console.log(`Returning to: ${redirectUri}`);
     _window.loadURL(new URL(redirectUri).toString());
   });
-})
+}
