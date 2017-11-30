@@ -1,31 +1,32 @@
 const google = require('googleapis');
 const environmentService = require('./environment.service.js');
 const sheets = google.sheets('v4');
+const Promise = require('bluebird');
 
-
-
-module.exports = {
-  read: (range, oauth2Client, onReadComplete) => {
+class SheetService {
+  read(readOptions, oauth2Client) {
     const getRequest = {
       auth: oauth2Client,
       spreadsheetId: environmentService.SPREADSHEET_ID,
-      range: range,
+      range: readOptions.range,
     };
 
-    sheets.spreadsheets.values.get(getRequest, onReadComplete);
-  },
+    return Promise.promisify(sheets.spreadsheets.values.get)(getRequest);
+  }
 
-  write: (range, values, oauth2Client, onWriteComplete) => {
+  write(writeOptions, oauth2Client) {
     const updateRequest = {
       auth: oauth2Client,
       spreadsheetId: environmentService.SPREADSHEET_ID,
-      range: range,
+      range: writeOptions.range,
       valueInputOption: 'USER_ENTERED',
       resource: {
-        values
+        values: writeOptions.value
       }
     };
 
-    sheets.spreadsheets.values.update(updateRequest, onWriteComplete);
+    return Promise.promisify(sheets.spreadsheets.values.update)(updateRequest);
   }
 }
+
+module.exports = new SheetService();
