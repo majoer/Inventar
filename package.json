@@ -13,6 +13,8 @@
     "bluebird": "^3.5.1",
     "css-loader": "^0.28.7",
     "electron": "^1.7.9",
+    "eslint": "^4.12.1",
+    "eslint-plugin-html": "^4.0.1",
     "file-loader": "^1.1.5",
     "font-awesome": "^4.7.0",
     "google-auth-library": "^0.11.0",

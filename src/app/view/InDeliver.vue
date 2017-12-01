@@ -51,7 +51,7 @@ export default {
           }, 3000);
         }
       }
-    }
+    };
 
     document.addEventListener('keyup', onKeyupFunctionReference);
   },

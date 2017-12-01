@@ -32,7 +32,7 @@ export default {
       sheetService.write();
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

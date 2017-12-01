@@ -33,20 +33,8 @@
 </template>
 
 <script>
-import oauthService from '../service/oauth.service';
-import oauthService from '../service/oauth.service';
-
-let buffer = '';
-
 export default {
-  methods: {
-    login() {
-      oauthService.authorize((redirectUri) => {
-        window.location.href = redirectUri;
-      });
-    }
-  }
-}
+};
 </script>
 
 <style scoped lang="scss">

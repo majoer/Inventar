@@ -26,7 +26,7 @@ const router = new VueRouter({
 
 export default {
   router
-}
+};
 </script>
 
 <style scoped lang="scss">

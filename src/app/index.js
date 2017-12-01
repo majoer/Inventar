@@ -5,7 +5,7 @@ import App from './view/App.vue';
 
 Vue.use(VueRouter);
 
-const app = new Vue({
+new Vue({
   el: '#app',
   render (h) {
     return h(App);

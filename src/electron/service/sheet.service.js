@@ -11,7 +11,15 @@ class SheetService {
       range: readOptions.range,
     };
 
-    return Promise.promisify(sheets.spreadsheets.values.get)(getRequest);
+    return Promise.promisify(sheets.spreadsheets.values.get)(getRequest).then((data) => {
+      return data.values.map((itemRow) => {
+        return {
+          id: itemRow[0],
+          name: itemRow[1],
+          status: itemRow[2]
+        };
+      });
+    });
   }
 
   write(writeOptions, oauth2Client) {

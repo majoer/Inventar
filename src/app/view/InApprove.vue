@@ -19,15 +19,8 @@ import sheetService from '../service/sheet.service';
 export default {
   created() {
     this.newStorageCodes = this.$route.query.storageCodes;
-    sheetService.read((data) => {
-      this.items = data.values;
-      this.newItems = this.items.map((itemRow) => {
-        return {
-          id: itemRow[0],
-          name: itemRow[1],
-          status: itemRow[2]
-        }
-      }).filter((item) => !this.newStorageCodes.includes(item.id))
+    sheetService.read((items) => {
+      this.newItems = items.filter((item) => !this.newStorageCodes.includes(item.id));
     });
   },
   data() {
@@ -45,7 +38,7 @@ export default {
       sheetService.write();
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

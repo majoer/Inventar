@@ -11,7 +11,7 @@ export default {
       sheetService.read();
     }
   }
-}
+};
 </script>
 
 <style lang="scss"
