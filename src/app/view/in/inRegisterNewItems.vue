@@ -4,10 +4,11 @@
   <h1>Opprett nye varer</h1>
   <div class="item-list">
     <div class="item-list__entry" v-for="item in newItems" v-bind:id="item.id">
+      <span v-if="item.type === 'Eske'"><i class="fa fa-archive"></i></span>
       <div class="item">
         <div class="item__id">{{ item.id }}</div>
         <div class="item__name">
-          <select v-model="item.type">
+          <select v-model="item.type" v-on:change="onRegularItemTypeChanged">
             <option disabled value="">Velg en varetype</option>
             <option>Eske</option>
             <option v-for="itemType in availableItemTypes">{{itemType}}</option>
@@ -167,11 +168,16 @@ export default {
   },
 
   methods: {
-    read() {
-    },
+    onRegularItemTypeChanged(event) {
+      const itemId = event.target.closest('.item-list__entry').getAttribute('id');
+      const item = this.newItems.find((item) => item.id === itemId);
 
-    write() {
-      sheetService.write();
+      if (item.boxContent && item.boxContent.length > 0) {
+        this.$log.debug(`Emtpying box: ${itemId}`);
+
+        this.newItems = this.newItems.concat(item.boxContent);
+        item.boxContent = [];
+      }
     }
   }
 };
