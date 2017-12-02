@@ -11,7 +11,7 @@
         <i class="fa fa-4x fa-times-circle"/>
         <div>Avbryt</div>
       </button>
-      <button v-on:click="$router.push('/inn/lever')">
+      <button v-on:click="$router.push('/inn/les-inn')">
         <i class="fa fa-4x fa-arrow-circle-right"/>
         <div>Neste</div>
       </button>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import sheetService from '../service/sheet.service';
+import sheetService from '../../service/sheet.service';
 
 export default {
   methods: {

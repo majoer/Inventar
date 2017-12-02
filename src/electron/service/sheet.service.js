@@ -15,7 +15,7 @@ class SheetService {
       return data.values.map((itemRow) => {
         return {
           id: itemRow[0],
-          name: itemRow[1],
+          type: itemRow[1],
           status: itemRow[2]
         };
       });

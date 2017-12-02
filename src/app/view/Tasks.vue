@@ -12,7 +12,7 @@
     </div>
 
     <div class="dashboard__item">
-      <button class="dashboard__button" v-on:click="$router.push('/inn/scan')">
+      <button class="dashboard__button" v-on:click="$router.push('/inn/lagringsmodus')">
         <div class="dashboard__button__icon">
           <i class="fa fa-4x fa-archive"/>
         </div>

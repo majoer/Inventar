@@ -2,6 +2,9 @@ const { URL } = require('url');
 const { app, BrowserWindow } = require('electron');
 const environmentService = require('./service/environment.service.js');
 const ipcEvents = require('./ipc-events');
+const contextMenu = require('electron-context-menu');
+
+contextMenu({});
 
 function createWindow() {
   return new BrowserWindow({

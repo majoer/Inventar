@@ -5,17 +5,19 @@
 <script>
 import VueRouter from 'vue-router';
 import Tasks from './Tasks.vue';
-import InScan from './InScan.vue';
-import InDeliver from './InDeliver.vue';
-import InApprove from './InApprove.vue';
+import InStorageModeQR from './in/InStorageModeQR.vue';
+import inReadQRCodes from './in/inReadQRCodes.vue';
+import InRegisterNewItems from './in/InRegisterNewItems.vue';
+import InApproveNewStorageStatus from './in/InApproveNewStorageStatus.vue';
 import Out from './Out.vue';
 import Report from './Report.vue';
 
 const routes = [
   { path: '/', component: Tasks},
-  { path: '/inn/scan', component: InScan},
-  { path: '/inn/lever', component: InDeliver},
-  { path: '/inn/godkjenn', component: InApprove},
+  { path: '/inn/lagringsmodus', component: InStorageModeQR},
+  { path: '/inn/les-inn', component: inReadQRCodes},
+  { path: '/inn/registrer', component: InRegisterNewItems},
+  { path: '/inn/godkjenn', component: InApproveNewStorageStatus},
   { path: '/ut', component: Out},
   { path: '/rapport', component: Report}
 ];

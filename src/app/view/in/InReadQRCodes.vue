@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import sheetService from '../service/sheet.service';
-
 let buffer = '';
 let storageCodes = [];
 let onKeyupFunctionReference;
@@ -43,7 +41,7 @@ export default {
 
           timeout = setTimeout(() => {
             router.push({
-              path: '/inn/godkjenn',
+              path: '/inn/registrer',
               query: {
                 storageCodes: storageCodes.join(',')
               }
@@ -58,22 +56,8 @@ export default {
 
   destroyed() {
     document.removeEventListener('keyup', onKeyupFunctionReference);
-  },
-
-  methods: {
-    read() {
-      sheetService.read();
-    },
-
-    write() {
-      sheetService.write();
-    },
-
-    onKeyup(event) {
-      console.log(event.key);
-    }
   }
-}
+};
 </script>
 
 <style lang="scss">
