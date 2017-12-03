@@ -3,12 +3,26 @@ const sheetService = require('./service/sheet.service.js');
 const { ipcMain } = require('electron');
 
 class IpcEvents {
+
+  constructor() {
+    this.reading = false;
+  }
+
   setup(window) {
-    ipcMain.on('sheet.read', (event, readOptions) => {
+    ipcMain.on('sheet.read', (event) => {
+      if (this.reading) {
+        return;
+      }
+
+      this.reading = true;
+
       sessionService.getOAuthClient(window).then((oauthClient) => {
-        sheetService.read(readOptions, oauthClient).then((sheetData) => {
+        sheetService.readAllItems(oauthClient).then((sheetData) => {
           event.sender.send('sheet.read.complete', sheetData);
-        });
+        })
+          .then(() => this.reading = false)
+          .catch(() => this.reading = false);
+
       });
     });
 

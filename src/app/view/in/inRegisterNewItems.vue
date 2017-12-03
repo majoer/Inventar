@@ -1,6 +1,6 @@
 <template>
-<div class="approval-view">
-  <div class="approval-view__dropzone"></div>
+<div class="register-view">
+  <div class="register-view__dropzone"></div>
   <h1>Opprett nye varer</h1>
   <div class="item-list">
     <div class="item-list__entry" v-for="item in newItems" v-bind:id="item.id">
@@ -35,6 +35,16 @@
         </div>
       </div>
     </div>
+  </div>
+  <div>
+    <button v-on:click="$router.push('/')">
+      <i class="fa fa-4x fa-times-circle"/>
+      <div>Avbryt</div>
+    </button>
+    <button v-on:click="navigateToApproval()">
+      <i class="fa fa-4x fa-arrow-circle-right"/>
+      <div>Neste</div>
+    </button>
   </div>
 </div>
 </template>
@@ -140,7 +150,7 @@ export default {
         }
       });
 
-      interact(this.$el.querySelector('.approval-view__dropzone')).dropzone({
+      interact(this.$el.querySelector('.register-view__dropzone')).dropzone({
         accept: '.box-content__entry',
         ondrop: (event) => {
           const itemIdForDropped = event.relatedTarget.getAttribute('id');
@@ -178,18 +188,22 @@ export default {
         this.newItems = this.newItems.concat(item.boxContent);
         item.boxContent = [];
       }
+    },
+
+    navigateToApproval() {
+      this.$router.push({ path: '/inn/godkjenn', query: { items: JSON.stringify(this.newItems.concat(this.allStoredItems))}});
     }
   }
 };
 </script>
 
 <style lang="scss">
-.approval-view {
+.register-view {
   width: 100%;
   z-index: 1;
 }
 
-.approval-view__dropzone {
+.register-view__dropzone {
   bottom: 0;
   left: 0;
   position: fixed;

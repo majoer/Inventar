@@ -7,9 +7,7 @@ export default {
       onReadComplete(response);
     };
 
-    ipcRenderer.send('sheet.read', {
-      range: 'A2:C8'
-    });
+    ipcRenderer.send('sheet.read');
     ipcRenderer.on('sheet.read.complete', callback);
   },
 

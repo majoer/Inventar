@@ -3,6 +3,9 @@ const { app, BrowserWindow } = require('electron');
 const environmentService = require('./service/environment.service.js');
 const ipcEvents = require('./ipc-events');
 const contextMenu = require('electron-context-menu');
+const winston = require('winston');
+
+winston.level = 'debug';
 
 contextMenu({});
 
