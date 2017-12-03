@@ -5,7 +5,8 @@ const Promise = require('bluebird');
 const winston = require('winston');
 
 const SHEET_NAME_ITEMS = 'inventar';
-const PAGE_SIZE = 1;
+const SHEET_NAME_TYPES = 'typer';
+const PAGE_SIZE = 20;
 
 class SheetService {
   read(range, oauth2Client) {
@@ -39,16 +40,16 @@ class SheetService {
     return Promise.promisify(sheets.spreadsheets.values.update)(updateRequest);
   }
 
-  readAllItems(oauth2Client) {
+  readAllRows(sheetName, columnIdStart, columnIdEnd, initialRowIndexStart, oauth2Client) {
     return new Promise((resolve, reject) => {
       let allItems = [];
 
       const readPage = (currentPage) => {
-        const columnIndexStart = 2 + currentPage * PAGE_SIZE;
-        const columnIndexEnd = columnIndexStart + PAGE_SIZE - 1;
-        const cellStart = `A${columnIndexStart}`;
-        const cellEnd = `D${columnIndexEnd}`;
-        const range = `${SHEET_NAME_ITEMS}!${cellStart}:${cellEnd}`;
+        const rowIndexStart = initialRowIndexStart + currentPage * PAGE_SIZE;
+        const rowIndexEnd = rowIndexStart + PAGE_SIZE - 1;
+        const cellStart = columnIdStart + rowIndexStart;
+        const cellEnd = columnIdEnd + rowIndexEnd;
+        const range = `${sheetName}!${cellStart}:${cellEnd}`;
 
         this.read(range, oauth2Client).then((values) => {
           winston.debug(`Read ${values.length} item(s) @page ${currentPage} (${range})`);
@@ -57,19 +58,22 @@ class SheetService {
           if (values.length === PAGE_SIZE) {
             readPage(++currentPage);
           } else {
-            winston.debug(`Read all items in ${currentPage} pages a ${PAGE_SIZE}`);
+            winston.debug(`Read all items in ${currentPage + 1} pages a ${PAGE_SIZE}`);
             resolve(allItems);
           }
         }).catch((err) => reject(err));
-      }
+      };
 
       readPage(0);
     });
+  }
 
+  readAllItems(oauth2Client) {
+    return this.readAllRows(SHEET_NAME_ITEMS, 'A', 'D', 2, oauth2Client);
   }
 
   readAllItemTypes(oauth2Client) {
-
+    return this.readAllRows(SHEET_NAME_TYPES, 'A', 'A', 2, oauth2Client);
   }
 }
 
