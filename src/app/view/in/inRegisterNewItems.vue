@@ -82,7 +82,7 @@ const draggableConfig = {
 export default {
   created() {
     this.readStorageCodes = this.$route.query.storageCodes.split(',');
-    sheetService.read((allStoredItems) => {
+    sheetService.readAllItems((allStoredItems) => {
       this.allStoredItems = allStoredItems;
       this.newItems = this.readStorageCodes.filter((code) => !this.allStoredItems.map((item) => item.id).includes(code))
         .map((code) => {
