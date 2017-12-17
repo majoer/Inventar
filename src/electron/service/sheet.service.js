@@ -73,7 +73,9 @@ class SheetService {
   }
 
   readAllItemTypes(oauth2Client) {
-    return this.readAllRows(SHEET_NAME_TYPES, 'A', 'A', 2, oauth2Client);
+    return this.readAllRows(SHEET_NAME_TYPES, 'A', 'A', 2, oauth2Client).then((rows) => {
+      return rows.map((row) => row[0]);
+    });
   }
 }
 

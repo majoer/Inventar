@@ -82,6 +82,11 @@ const draggableConfig = {
 export default {
   created() {
     this.readStorageCodes = this.$route.query.storageCodes.split(',');
+
+    sheetService.readAllTypes((allTypes) => {
+      this.availableItemTypes = allTypes;
+    });
+
     sheetService.readAllItems((allStoredItems) => {
       this.allStoredItems = allStoredItems;
       this.newItems = this.readStorageCodes.filter((code) => !this.allStoredItems.map((item) => item.id).includes(code))
@@ -168,7 +173,7 @@ export default {
 
   data() {
     return {
-      availableItemTypes: [ 'Ostehøvel', 'Sko', 'Hamburger' ],
+      availableItemTypes: [],
       selectedItemType: '',
       readStorageCodes: [],
       allStoredItems: [],
