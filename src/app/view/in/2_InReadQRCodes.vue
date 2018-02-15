@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 let buffer = '';
 let storageCodes = [];
 let onKeyupFunctionReference;
@@ -40,12 +41,8 @@ export default {
           clearTimeout(timeout);
 
           timeout = setTimeout(() => {
-            router.push({
-              path: '/inn/registrer',
-              query: {
-                storageCodes: storageCodes.join(',')
-              }
-            });
+            this.$store.dispatch('scanItems', storageCodes);
+            router.push('/inn/registrer');
           }, 3000);
         }
       }

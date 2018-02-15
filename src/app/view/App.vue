@@ -5,10 +5,10 @@
 <script>
 import VueRouter from 'vue-router';
 import Tasks from './Tasks.vue';
-import InStorageModeQR from './in/InStorageModeQR.vue';
-import inReadQRCodes from './in/inReadQRCodes.vue';
-import InRegisterNewItems from './in/InRegisterNewItems.vue';
-import InApproveNewStorageStatus from './in/InApproveNewStorageStatus.vue';
+import InStorageModeQR from './in/1_InStorageModeQR.vue';
+import inReadQRCodes from './in/2_inReadQRCodes.vue';
+import InRegisterNewItems from './in/3_InRegisterNewItems.vue';
+import InApproveNewStorageStatus from './in/4_InApproveNewStorageStatus.vue';
 import Out from './Out.vue';
 import Report from './Report.vue';
 

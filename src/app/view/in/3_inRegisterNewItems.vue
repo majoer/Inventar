@@ -3,32 +3,35 @@
   <div class="register-view__dropzone"></div>
   <h1>Opprett nye varer</h1>
   <div class="item-list">
-    <div class="item-list__entry" v-for="item in newItems" v-bind:id="item.id">
-      <span v-if="item.type === 'Eske'"><i class="fa fa-archive"></i></span>
+    <div class="item-list__entry" v-for="genericItem in genericItems" v-bind:id="genericItem.id">
+      <span v-if="isBox(genericItem)"><i class="fa fa-archive"></i></span>
       <div class="item">
-        <div class="item__id">{{ item.id }}</div>
+        <div class="item__id">{{ genericItem.id }}</div>
         <div class="item__name">
-          <select v-model="item.type" v-on:change="onRegularItemTypeChanged">
-            <option disabled value="">Velg en varetype</option>
-            <option>Eske</option>
-            <option v-for="itemType in availableItemTypes">{{itemType}}</option>
+          <select v-bind:value="genericItem.type.name"
+                  v-on:change="onRegularItemTypeChanged($event, genericItem)">
+            <option v-bind:value="Type.TYPE_UNKNOWN" disabled selected>Velg en varetype</option>
+            <option v-bind:value="Type.TYPE_BOX">Eske</option>
+            <option v-for="itemType in $store.state.inStore.storedItemTypes"
+                    v-bind:value="itemType.name">{{itemType.name}}</option>
           </select>
         </div>
         <div class="item__status">
-          <span class="item__status__current">{{ item.status }}</span>
+          <span class="item__status__current">{{ genericItem.status.name }}</span>
           <span class="item__status__arrow"><i class="fa fa-arrow-right"/></span>
-          <span class="item__status__new">{{ newStatus }}</span>
+          <span class="item__status__new">{{ Status.STATUS_IN }}</span>
         </div>
       </div>
-      <div class="box-content" v-if="item.type === 'Eske'">
+      <div class="box-content" v-if="isBox(genericItem)">
         <div class="box-content__dropzone">
           <h3 class="box-content__text">Innhold</h3>
-          <div class="box-content__entry" v-for="boxItem in item.boxContent" v-bind:id="boxItem.id">
+          <div class="box-content__entry" v-for="boxItem in genericItem.items" v-bind:id="boxItem.id">
             <span>{{ boxItem.id }}</span>
             <span>
-              <select v-model="boxItem.type">
-                <option disabled value="">Velg en varetype</option>
-                <option v-for="itemType in availableItemTypes">{{itemType}}</option>
+              <select v-model="boxItem.type.name">
+                <option v-bind:value="Type.TYPE_UNKNOWN" disabled>Velg en varetype</option>
+                <option v-for="itemType in $store.state.inStore.storedItemTypes"
+                        v-bind:value="itemType.name">{{itemType.name}}</option>
               </select>
             </span>
           </div>
@@ -50,9 +53,12 @@
 </template>
 
 <script>
-import sheetService from '../../service/sheet.service';
+import Type from '../../domain/Type';
+import Status from '../../domain/Status';
 import interact from 'interactjs';
 import Vue from 'vue';
+import Box from '../../domain/Box';
+import Item from '../../domain/Item';
 
 const draggableConfig = {
   onmove: (event) => {
@@ -81,28 +87,13 @@ const draggableConfig = {
 
 export default {
   created() {
-    this.readStorageCodes = this.$route.query.storageCodes.split(',');
-
-    sheetService.readAllTypes((allTypes) => {
-      this.availableItemTypes = allTypes;
-    });
-
-    sheetService.readAllItems((allStoredItems) => {
-      this.allStoredItems = allStoredItems;
-      this.newItems = this.readStorageCodes.filter((code) => !this.allStoredItems.map((item) => item.id).includes(code))
-        .map((code) => {
-          return {
-            id: code,
-            type: '',
-            status: 'Ny',
-            boxContent: []
-          };
-        });
-    });
+    this.$store.dispatch('initialize');
+    this.genericItems = this.$store.getters.newQRCodes.map((qrCode) => Item.fromQRCode(qrCode))
   },
 
   updated() {
-    if (this.newItems.length > 0) {
+    console.log(this.genericItems);
+    if (this.genericItems.length > 0) {
       interact('.item-list__entry', {
         context: this.$el.querySelector('.item-list')
       }).draggable(draggableConfig);
@@ -120,34 +111,33 @@ export default {
           const elDropped = event.relatedTarget;
           const itemIdForDropzone = elDropzone.closest('.item-list__entry').getAttribute('id');
           const itemIdForDropped = elDropped.getAttribute('id');
-          const itemForDropzone = this.newItems.find((item) => item.id === itemIdForDropzone);
-          const isItemDropzoneBox = itemForDropzone.type === 'Eske';
+          const itemForDropzone = this.genericItems.find((item) => item.id === itemIdForDropzone);
+          const isItemDropzoneBox = this.isBox(itemForDropzone);
           const isDroppedRegularItem = elDropped.classList.contains('item-list__entry');
           const isDroppedBoxItem = elDropped.classList.contains('box-content__entry');
 
-
           if (isDroppedRegularItem) {
-            const itemDropped = this.newItems.find((item) => item.id === itemIdForDropped);
-            const isItemDroppedBox = itemDropped.type === 'Eske';
+            const itemDropped = this.genericItems.find((item) => item.id === itemIdForDropped);
+            const isItemDroppedBox = itemDropped.type === Type.TYPE_BOX;
             const canDrop = itemDropped && isItemDropzoneBox && !isItemDroppedBox && itemForDropzone !== itemDropped;
 
             this.$log.debug(`Dropped regular item ${itemIdForDropzone} onto ${itemIdForDropped}. Approved: ${canDrop}`);
 
             if (canDrop) {
-              this.newItems = this.newItems.filter((item) => item.id !== itemIdForDropped);
-              itemForDropzone.boxContent.push(itemDropped);
+              this.genericItems = this.genericItems.filter((item) => item.id !== itemIdForDropped);
+              itemForDropzone.items.push(itemDropped);
             }
           } else if (isDroppedBoxItem) {
-            const itemDropzoneOld = this.newItems.find((item) => item.boxContent.some((boxItem) => boxItem.id === itemIdForDropped));
-            const itemDropped = itemDropzoneOld.boxContent.find((boxItem) => boxItem.id === itemIdForDropped);
-            const isItemDroppedBox = itemDropped.type === 'Eske';
+            const itemDropzoneOld = this.genericItems.find((item) => item.items.some((boxItem) => boxItem.id === itemIdForDropped));
+            const itemDropped = itemDropzoneOld.items.find((boxItem) => boxItem.id === itemIdForDropped);
+            const isItemDroppedBox = this.isBox(itemDropped);
             const canDrop = itemDropzoneOld && itemDropped && isItemDropzoneBox && !isItemDroppedBox && itemForDropzone !== itemDropped;
 
             this.$log.debug(`Dropped Box item ${itemIdForDropzone} onto ${itemIdForDropped}. Approved: ${canDrop}`);
 
             if (canDrop) {
-              itemDropzoneOld.boxContent = itemDropzoneOld.boxContent.filter((boxItem) => boxItem.id !== itemIdForDropped);
-              itemForDropzone.boxContent.push(itemDropped);
+              itemDropzoneOld.items = itemDropzoneOld.items.filter((boxItem) => boxItem.id !== itemIdForDropped);
+              itemForDropzone.items.push(itemDropped);
             }
           } else {
             this.$log.debug('Unknown item was dropped', elDropped);
@@ -159,13 +149,13 @@ export default {
         accept: '.box-content__entry',
         ondrop: (event) => {
           const itemIdForDropped = event.relatedTarget.getAttribute('id');
-          const itemDropzoneOld = this.newItems.find((item) => item.boxContent.some((boxItem) => boxItem.id === itemIdForDropped));
-          const itemDropped = itemDropzoneOld.boxContent.find((boxItem) => boxItem.id === itemIdForDropped);
+          const itemDropzoneOld = this.genericItems.find((item) => item.items.some((boxItem) => boxItem.id === itemIdForDropped));
+          const itemDropped = itemDropzoneOld.items.find((boxItem) => boxItem.id === itemIdForDropped);
 
           this.$log.debug(`Dropped box item outside. Approved: ${true}`, event.target);
 
-          itemDropzoneOld.boxContent = itemDropzoneOld.boxContent.filter((boxItem) => boxItem.id !== itemIdForDropped);
-          this.newItems = this.newItems.concat(itemDropped);
+          itemDropzoneOld.items = itemDropzoneOld.items.filter((boxItem) => boxItem.id !== itemIdForDropped);
+          this.genericItems = this.genericItems.concat(itemDropped);
         }
       });
     }
@@ -175,28 +165,35 @@ export default {
     return {
       availableItemTypes: [],
       selectedItemType: '',
+      genericItems: [],
       readStorageCodes: [],
       allStoredItems: [],
-      newItems: [],
-      newStatus: 'Inne'
+      Type,
+      Status
     };
   },
 
   methods: {
-    onRegularItemTypeChanged(event) {
-      const itemId = event.target.closest('.item-list__entry').getAttribute('id');
-      const item = this.newItems.find((item) => item.id === itemId);
+    onRegularItemTypeChanged(event, genericItem) {
+      const index = this.genericItems.indexOf(genericItem);
 
-      if (item.boxContent && item.boxContent.length > 0) {
-        this.$log.debug(`Emtpying box: ${itemId}`);
+      if (event.target.value === Type.TYPE_BOX) {
+        this.genericItems.splice(index, 1, Box.fromItem(this.genericItems[index]));
+      } else {
+        if (this.isBox(this.genericItem)) {
+          this.genericItems.splice(index, 1, Item.fromBox(this.genericItems[index]));
+        }
 
-        this.newItems = this.newItems.concat(item.boxContent);
-        item.boxContent = [];
+        this.genericItems.type = event.target.value;
       }
     },
 
     navigateToApproval() {
-      this.$router.push({ path: '/inn/godkjenn', query: { items: JSON.stringify(this.newItems.concat(this.allStoredItems))}});
+      this.$router.push({ path: '/inn/godkjenn', query: { items: JSON.stringify(this.genericItems.concat(this.allStoredItems))}});
+    },
+
+    isBox(genericItem) {
+      return !(genericItem instanceof Item);
     }
   }
 };

@@ -1,4 +1,6 @@
 import { ipcRenderer } from 'electron';
+import Box from '../domain/Box';
+import Item from '../domain/Item';
 
 function read(event, onReadComplete) {
   const completeEvent = `${event}:complete`;
@@ -24,8 +26,16 @@ function write() {
 
 class SheetService {
 
+  readAllBoxes(onReadComplete) {
+    read('sheet:read:boxes', (boxes) => {
+      onReadComplete(boxes.map((box) => Box.fromOther(box)));
+    });
+  }
+
   readAllItems(onReadComplete) {
-    read('sheet:read:items', onReadComplete);
+    read('sheet:read:items', (items) => {
+      onReadComplete(items.map((item) => Item.fromOther(item)));
+    });
   }
 
   readAllTypes(onReadComplete) {

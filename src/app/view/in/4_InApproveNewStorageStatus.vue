@@ -50,6 +50,7 @@ import sheetService from '../../service/sheet.service';
 export default {
   created() {
     this.items = JSON.parse(this.$route.query.items);
+    this.updatedItems = this.items.filter((item) => item.isPendingNewStatus());
   },
   data() {
     return {

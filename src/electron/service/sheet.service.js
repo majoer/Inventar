@@ -4,6 +4,7 @@ const sheets = google.sheets('v4');
 const Promise = require('bluebird');
 const winston = require('winston');
 
+const SHEET_NAME_BOXES = 'esker';
 const SHEET_NAME_ITEMS = 'inventar';
 const SHEET_NAME_TYPES = 'typer';
 const PAGE_SIZE = 20;
@@ -68,8 +69,12 @@ class SheetService {
     });
   }
 
+  readAllBoxes(oauth2Client) {
+    return this.readAllRows(SHEET_NAME_BOXES, 'A', 'C', 2, oauth2Client);
+  }
+
   readAllItems(oauth2Client) {
-    return this.readAllRows(SHEET_NAME_ITEMS, 'A', 'D', 2, oauth2Client);
+    return this.readAllRows(SHEET_NAME_ITEMS, 'A', 'E', 2, oauth2Client);
   }
 
   readAllItemTypes(oauth2Client) {

@@ -8,6 +8,14 @@ class IpcEvents {
   }
 
   setup(window) {
+    ipcMain.on('sheet:read:boxes', (event) => {
+      sessionService.getOAuthClient(window).then((oauthClient) => {
+        sheetService.readAllBoxes(oauthClient).then((sheetData) => {
+          event.sender.send('sheet:read:boxes:complete', sheetData);
+        });
+      });
+    });
+
     ipcMain.on('sheet:read:items', (event) => {
       sessionService.getOAuthClient(window).then((oauthClient) => {
         sheetService.readAllItems(oauthClient).then((sheetData) => {

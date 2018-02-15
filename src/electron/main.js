@@ -11,10 +11,10 @@ contextMenu({});
 
 function createWindow() {
   return new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 975,
+    height: 527,
     title: `Inventar ${environmentService.ENVIRONMENT}`,
-    x: -800,
+    x: -967,
     y: 0
   });
 }
